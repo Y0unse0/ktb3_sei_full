@@ -1,4 +1,6 @@
-public class Wizard extends Hero{
+package domain;
+
+public class Wizard extends Hero {
 
     public Wizard(String name, int maxHp, int normalPower,int specialPower){
         super(name,maxHp,normalPower);
@@ -8,8 +10,8 @@ public class Wizard extends Hero{
     }
 
     @Override
-    public void normalAttack(Charactor charactor) {
+    public void normalAttack(Character character) {
         System.out.println(this.name+"가 "+ normalAttackName+"을 사용했습니다.");
-        super.normalAttack(charactor);
+        super.normalAttack(character);
     }
 }

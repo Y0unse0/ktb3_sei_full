@@ -1,12 +1,14 @@
-public class Dragon extends Charactor {
+package domain;
+
+public class Dragon extends Character {
     public Dragon(String name, int maxHp, int normalPower){
         super(name, maxHp,normalPower);
         super.normalAttackName = "발톱 베기";
     }
     @Override
-    public void normalAttack(Charactor charactor) {
+    public void normalAttack(Character character) {
         System.out.println(this.name+"이 "+ normalAttackName+"를 사용했습니다.");
-        super.normalAttack(charactor);
+        super.normalAttack(character);
     }
     public void image(){
         System.out.println("       .     .");

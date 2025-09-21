@@ -1,4 +1,6 @@
-public class Hero extends Charactor{
+package domain;
+
+public class Hero extends Character {
     public int specialPower;
     public int specialAttackNum;
     public String specialAttackName;
@@ -9,7 +11,7 @@ public class Hero extends Charactor{
     }
 
 
-    public void specialAttack(Charactor villain) {
+    public void specialAttack(Character villain) {
         System.out.println(this.name+"가 "+ specialAttackName+"을 사용했습니다.");
         villain.currentHp -= specialPower;
         this.specialAttackNum--;
