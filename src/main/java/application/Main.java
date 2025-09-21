@@ -2,11 +2,13 @@ package application;
 
 import domain.*;
 import service.BattleSystem;
+import task.HeroTask;
+import task.VillainTask;
 
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         Elf elf = new Elf("엘프", 100, 10, 30);
         Knight knight = new Knight("기사", 100, 10, 30);
@@ -14,6 +16,7 @@ public class Main {
 
         Goblin goblin = new Goblin("고블린", 80, 30);
         Dragon dragon = new Dragon("드래곤", 100, 60);
+
         String[] intro = {"게임에 오신 것을 환영합니다! 당신의 모험을 응원합니다.",
                 "++++++++++++++++++++++++++++++++++++++++++++++++++", "",
                 "어둠이 드리워진 땅에 고블린이 나타났습니다.",
@@ -36,6 +39,7 @@ public class Main {
         }
 
 
+
         int heroNum = 3;
 
         Scanner scanner = new Scanner(System.in);
@@ -46,24 +50,55 @@ public class Main {
         System.out.println("첫 전투에 나설 영웅을 선택하세요");
 
         Hero currentHero;
+
+
+
         while (heroNum > 0 && !goblin.isDead) {
-
             currentHero = battleSystem.chooseHero(elf,knight,wizard);
-            battleSystem.executeBattle(currentHero,goblin);
 
-            if(currentHero.isDead) {
-                heroNum--;
-            }
-            if (!goblin.isDead && heroNum > 0) {
-                System.out.println("이어서 싸울 영웅을 선택하세요");
+
+            while(!currentHero.isDead && !goblin.isDead) {
+
+                HeroTask heroTask = new HeroTask(currentHero, goblin);
+                VillainTask villainTask = new VillainTask(currentHero, goblin);
+
+                Thread heroThread = new Thread(heroTask);
+                Thread villainThread = new Thread(villainTask);
+
+                heroThread.start();
+                heroThread.join();
+
+                villainThread.start();
+                villainThread.join();
+
+
+                Thread.sleep(1000);
+
+                heroTask.stop();
+                villainTask.stop();
+
             }
 
+
+
+                if (currentHero.isDead) {
+                    System.out.println("");
+                    System.out.println(currentHero.name + "가 쓰러졌습니다!");
+                    System.out.println("");
+                    heroNum--;
+
+                }
+                if (!goblin.isDead && heroNum > 0) {
+                    System.out.println("이어서 싸울 영웅을 선택하세요");
+                }
+
+            if(heroNum == 0){
+                System.out.println("전투에서 패배하였습니다.");
+                System.out.println("게임을 종료합니다.");
+                return;
+            }
         }
-        if(heroNum == 0){
-            System.out.println("전투에서 패배하였습니다.");
-            System.out.println("게임을 종료합니다.");
-            return;
-        }
+
 
 
         if(heroNum != 0) {
@@ -117,19 +152,48 @@ public class Main {
 
             while (heroNum > 0 && !dragon.isDead) {
                 currentHero = battleSystem.chooseHero(elf,knight,wizard);
-                battleSystem.executeBattle(currentHero,dragon);
-                if(currentHero.isDead){
+
+
+                while(!currentHero.isDead && !dragon.isDead) {
+
+                    HeroTask heroTask = new HeroTask(currentHero, dragon);
+                    VillainTask villainTask = new VillainTask(currentHero, dragon);
+
+                    Thread heroThread = new Thread(heroTask);
+                    Thread villainThread = new Thread(villainTask);
+
+                    heroThread.start();
+                    heroThread.join();
+
+                    villainThread.start();
+                    villainThread.join();
+
+
+                    Thread.sleep(1000);
+
+                    heroTask.stop();
+                    villainTask.stop();
+
+                }
+
+                if (currentHero.isDead) {
+                    System.out.println("");
+                    System.out.println(currentHero.name + "가 쓰러졌습니다!");
+                    System.out.println("");
                     heroNum--;
                 }
-                if (heroNum > 0) {
+                if (!dragon.isDead && heroNum > 0) {
                     System.out.println("이어서 싸울 영웅을 선택하세요");
                 }
+
+                if(heroNum == 0){
+                    System.out.println("전투에서 패배하였습니다.");
+                    System.out.println("게임을 종료합니다.");
+                    return;
+                }
+
             }
-            if(heroNum == 0){
-                System.out.println("전투에서 패배하였습니다.");
-                System.out.println("게임을 종료합니다.");
-                return;
-            }
+
 
             System.out.println("전투에서 승리하였습니다!");
             String[] ending = {
